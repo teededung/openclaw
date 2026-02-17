@@ -105,6 +105,18 @@ describe("extractToolResultMediaPaths", () => {
     expect(extractToolResultMediaPaths(result)).toEqual([]);
   });
 
+  it("ignores MEDIA prose instructions that are not actual file paths", () => {
+    const result = {
+      content: [
+        {
+          type: "text",
+          text: "The script prints a MEDIA: line for OpenClaw to auto-attach on supported chat providers.",
+        },
+      ],
+    };
+    expect(extractToolResultMediaPaths(result)).toEqual([]);
+  });
+
   it("ignores details.path when no image content exists", () => {
     // details.path without image content is not media.
     const result = {

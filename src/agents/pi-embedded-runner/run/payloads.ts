@@ -52,6 +52,27 @@ function isVerboseToolDetailEnabled(level?: VerboseLevel): boolean {
   return level === "on" || level === "full";
 }
 
+function isRecoverableMessageReactMessageIdInputError(lastToolError: LastToolError): boolean {
+  const normalizedTool = lastToolError.toolName.trim().toLowerCase();
+  if (normalizedTool !== "message") {
+    return false;
+  }
+  const normalizedFingerprint = (lastToolError.actionFingerprint ?? "").trim().toLowerCase();
+  const normalizedMeta = (lastToolError.meta ?? "").trim().toLowerCase();
+  const isReactAction =
+    normalizedFingerprint.includes("tool=message") &&
+    normalizedFingerprint.includes("action=react");
+  const isReactMeta = normalizedMeta.startsWith("react");
+  if (!isReactAction && !isReactMeta) {
+    return false;
+  }
+  const normalizedError = (lastToolError.error ?? "").trim().toLowerCase();
+  if (!normalizedError || !isRecoverableToolError(normalizedError)) {
+    return false;
+  }
+  return normalizedError.includes("messageid") || normalizedError.includes("message id");
+}
+
 function resolveToolErrorWarningPolicy(params: {
   lastToolError: LastToolError;
   hasUserFacingReply: boolean;
@@ -60,6 +81,11 @@ function resolveToolErrorWarningPolicy(params: {
   verboseLevel?: VerboseLevel;
 }): ToolErrorWarningPolicy {
   const includeDetails = isVerboseToolDetailEnabled(params.verboseLevel);
+  // `message.react` without a `messageId` is a common recoverable planning miss.
+  // Suppress it here to avoid leaking noisy warning texts back into chats.
+  if (isRecoverableMessageReactMessageIdInputError(params.lastToolError)) {
+    return { showWarning: false, includeDetails };
+  }
   if (params.suppressToolErrorWarnings) {
     return { showWarning: false, includeDetails };
   }

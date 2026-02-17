@@ -259,6 +259,7 @@ export type ChannelThreadingContext = {
 export type ChannelThreadingToolContext = {
   currentChannelId?: string;
   currentChannelProvider?: ChannelId;
+  currentMessageId?: string;
   currentThreadTs?: string;
   currentMessageId?: string | number;
   replyToMode?: "off" | "first" | "all";

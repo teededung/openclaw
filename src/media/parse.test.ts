@@ -46,6 +46,12 @@ describe("splitMediaFromOutput", () => {
     expect(result.text).toBe(input);
   });
 
+  it("keeps MEDIA instruction prose lines", () => {
+    const input = "MEDIA: line for OpenClaw to auto-attach on supported chat providers.";
+    const result = splitMediaFromOutput(input);
+    expect(result.mediaUrls).toBeUndefined();
+    expect(result.text).toBe(input);
+  });
   it("rejects bare words without file extensions", () => {
     const result = splitMediaFromOutput("MEDIA:screenshot");
     expect(result.mediaUrls).toBeUndefined();

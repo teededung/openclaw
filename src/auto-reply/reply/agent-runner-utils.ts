@@ -41,7 +41,7 @@ export function buildThreadingToolContext(params: {
     return {
       currentChannelId: sessionCtx.To?.trim() || undefined,
       currentChannelProvider: provider ?? (rawProvider as ChannelId),
-      currentMessageId,
+      ...(currentMessageId ? { currentMessageId } : {}),
       hasRepliedRef,
     };
   }
