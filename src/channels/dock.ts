@@ -263,9 +263,7 @@ const DOCKS: Record<ChatChannelId, ChannelDock> = {
         const threadId = context.MessageThreadId;
         const rawCurrentMessageId = context.CurrentMessageId;
         const currentMessageId =
-          typeof rawCurrentMessageId === "number"
-            ? rawCurrentMessageId
-            : rawCurrentMessageId?.trim() || undefined;
+          rawCurrentMessageId != null ? String(rawCurrentMessageId).trim() || undefined : undefined;
         return {
           currentChannelId: context.To?.trim() || undefined,
           currentThreadTs: threadId != null ? String(threadId) : undefined,

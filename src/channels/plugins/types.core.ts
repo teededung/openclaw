@@ -261,7 +261,6 @@ export type ChannelThreadingToolContext = {
   currentChannelProvider?: ChannelId;
   currentMessageId?: string;
   currentThreadTs?: string;
-  currentMessageId?: string | number;
   replyToMode?: "off" | "first" | "all";
   hasRepliedRef?: { value: boolean };
   /**

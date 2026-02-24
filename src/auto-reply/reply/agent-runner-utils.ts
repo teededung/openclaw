@@ -22,7 +22,9 @@ export function buildThreadingToolContext(params: {
   hasRepliedRef: { value: boolean } | undefined;
 }): ChannelThreadingToolContext {
   const { sessionCtx, config, hasRepliedRef } = params;
-  const currentMessageId = sessionCtx.MessageSidFull ?? sessionCtx.MessageSid;
+  const rawCurrentMessageId = sessionCtx.MessageSidFull ?? sessionCtx.MessageSid;
+  const currentMessageId =
+    rawCurrentMessageId != null ? String(rawCurrentMessageId).trim() || undefined : undefined;
   if (!config) {
     return {
       currentMessageId,
